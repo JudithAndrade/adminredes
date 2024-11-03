@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Escáner de Red</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let previousActiveIps = new Set();
+        let previousInactiveIps = new Set();
+
+        function updateResults() {
+            const startTime = Date.now(); // Comienza a medir el tiempo
+
+            $.getJSON('/scan', function(data) {
+                const endTime = Date.now(); // Termina de medir el tiempo
+                const updateDuration = endTime - startTime; // Calcula la duración de la actualización
+
+                // Obtener nuevas IPs activas e inactivas
+                const currentActiveIps = new Set(data.active_ips);
+                const currentInactiveIps = new Set(data.inactive_ips);
+
+                // Limpiar listas
+                $('#active_ips').empty();
+                $('#inactive_ips').empty();
+
+                // Mostrar tiempo de actualización
+                $('h3#update_time').text('Tiempo de actualización: ' + updateDuration + ' ms');
+
+                // Agregar IPs activas e inactivas a las listas
+                currentActiveIps.forEach(function(ip) {
+                    $('#active_ips').append('<li class="active ip-item">' + ip + ' - Tiempo de respuesta: ' + (data.response_times[ip] || 'N/A') + '</li>');
+                });
+
+                currentInactiveIps.forEach(function(ip) {
+                    $('#inactive_ips').append('<li class="inactive ip-item">' + ip + ' - Tiempo de respuesta: ' + (data.response_times[ip] || 'N/A') + '</li>');
+                });
+
+                // Manejar cambios en las listas
+                previousActiveIps.forEach(function(ip) {
+                    if (!currentActiveIps.has(ip)) {
+                        console.log(ip + ' ya no está activo');
+                    }
+                });
+
+                previousInactiveIps.forEach(function(ip) {
+                    if (!currentInactiveIps.has(ip)) {
+                        console.log(ip + ' ya no está inactivo');
+                    }
+                });
+
+                // Actualizar los conjuntos anteriores
+                previousActiveIps = currentActiveIps;
+                previousInactiveIps = currentInactiveIps;
+            }).fail(function() {
+                $('#active_ips').append('<li class="error">Error al obtener los resultados del escáner</li>');
+            });
+        }
+
+        // Función para filtrar IPs
+        function filterIPs() {
+            const searchText = $('#search').val().toLowerCase();
+            $('.ip-item').each(function() {
+                const ipText = $(this).text().toLowerCase();
+                $(this).toggle(ipText.includes(searchText));
+            });
+        }
+
+        $(document).ready(function() {
+            // Cargar resultados al inicio
+            updateResults();
+
+            // Actualizar resultados cada 5 segundos
+            setInterval(updateResults, 5000);
+
+            // Llamar a la función de filtro cada vez que se escriba en el campo de búsqueda
+            $('#search').on('input', filterIPs);
+        });
+    </script>
+</head>
+<body>
+    <h1>Escáner de Red</h1>
+
+    <!-- Barra de búsqueda -->
+    <input type="text" id="search" placeholder="Buscar IP..." aria-label="Buscar IP" />
+
+    <!-- Título del tiempo de actualización -->
+    <h3 id="update_time">Tiempo de actualización: N/A</h3>
+
+    <section>
+        <h2>IPs Activas</h2>
+        <ul id="active_ips" aria-live="polite">
+            <!-- IPs activas se agregarán aquí -->
+        </ul>
+    </section>
+
+    <section>
+        <h2>IPs Inactivas</h2>
+        <ul id="inactive_ips" aria-live="polite">
+            <!-- IPs inactivas se agregarán aquí -->
+        </ul>
+    </section>
+</body>
+</html>

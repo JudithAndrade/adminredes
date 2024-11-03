@@ -1,0 +1,83 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #8bddf1; /* Color de fondo general */
+}
+
+h1 {
+    color: #0e0d0d;
+    text-align: center; /* Centrar el título */
+}
+
+h2 {
+    color: #131212;
+    margin: 40px 0 20px; /* Aumentar margen superior a 40px y mantener 20px abajo */
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.active {
+    color: rgb(12, 12, 12);
+    background-color: #31c255; /* Color de fondo para IPs activas */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-bottom: 5px; /* Espacio entre elementos */
+}
+
+.inactive {
+    color: rgb(27, 27, 27);
+    background-color: #918b8e; /* Color de fondo para IPs inactivas */
+    padding: 10px; /* Espaciado interno */
+    border-radius: 5px; /* Bordes redondeados */
+    margin-bottom: 5px; /* Espacio entre elementos */
+}
+
+/* Alinear el campo de búsqueda a la derecha y agregar margen superior */
+#search {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    margin: 20px 0; /* Margen superior e inferior para mayor separación */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    float: right; /* Alinear a la derecha */
+}
+
+#add_ip_form {
+    margin-top: 20px; /* Espacio superior */
+}
+
+#new_ip {
+    width: 80%;
+    max-width: 500px;
+    padding: 10px;
+    margin-right: 10px; /* Espacio entre el campo de texto y el botón */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 15px; /* Espaciado interno del botón */
+    background-color: #31c255; /* Color del botón */
+    color: white; /* Color del texto en el botón */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambia el cursor al pasar el ratón */
+}
+
+button:hover {
+    background-color: #28a745; /* Color del botón al pasar el ratón */
+}
+
+/* Ejemplo de @media query para diseño responsive */
+@media (max-width: 600px) {
+    #search, #new_ip {
+        width: 100%; /* Campos de texto ocupan el ancho completo */
+        margin-right: 0; /* Sin margen a la derecha */
+        float: none; /* Asegurar que no floten en pantallas pequeñas */
+    }
+}
